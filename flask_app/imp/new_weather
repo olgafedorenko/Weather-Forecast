@@ -1,0 +1,122 @@
+import json
+import requests
+from datetime import datetime, timedelta
+
+def run():
+    while True:
+        city = input('Enter city name: ')
+        action = input('What do you like to know: ')
+        format_temp =input('Celsius(C) or Fahrenheit(F)?')
+        if action == 'today imp':
+            current_weather(city, format_temp)
+
+        elif action == 'imp for 5 next days':
+            while n_days not in range(1, 5):
+                n_days = int(input("Enter Number:"))
+            week(city,  format_temp, n_days)
+        else:
+            print ('Try again')
+
+
+def convert_to_C(temp):
+    return temp - 273
+
+
+def convert_to_F(temp):
+    return 32 + (9 / 5) *(temp)
+
+
+def convert_clouds(clouds, name):
+    if clouds >= 90:
+        return 'Now cloudy in {}'.format(name)
+    elif clouds >= 70:
+        return 'Now mostly cloudy in {}'.format(name)
+    elif clouds >= 30:
+        return 'Partly Cloudy / Partly Sunny in {}'.format(name)
+    elif clouds >= 10:
+        return 'Mostly Clear / Mostly Sunny in {}'.format(name)
+    else:
+        return 'Clear / Sunny in {}'.format(name)
+
+def convert_wind(wind, name):
+    if wind >= 40:
+        return 'Now Strong, High, Damaging in {}. Twigs and small branches are broken from trees, ' \
+               'walking is difficult.Moderately large waves with blown foam.'.format(name)
+    elif wind >= 25:
+        return 'Now Strong Breeze in {}. Large tree branches move,  telephone wires begin to "whistle", umbrellas are difficult to keep under control.' \
+               'Larger waves form, whitecaps prevalent, spray.'.format(name)
+    elif wind >= 15:
+        return 'Now is so windy in {}. Small branches move, raises dust, leaves and paper. ' \
+               'Small waves develop, becoming longer, whitecaps.'.format(name)
+    elif wind >= 8:
+        return 'Gentle Breeze in {}. Leaves and small twigs move, light weight flags extend. ' \
+               'Large wavelets, crests start to break, some whitecaps.'.format(name)
+    elif wind >= 4:
+        return 'Light Breeze in {}. Leaves rustle, can feel wind on your face, wind vanes begin to move. ' \
+               'Small wavelets develop, crests are glassy.'.format(name)
+    elif wind > 1.1:
+        return 'Light Air in {}. Rising smoke drifts, wind vane is inactive. ' \
+               'Small ripples appear on water surface.'.format(name)
+    else:
+        return 'Calm in {}. Still, calm air, smoke will rise vertically. ' \
+               'Water is mirror-like'.format(name)
+
+def current_weather(city, format_temp):
+    city_r = requests.get('http://api.openweathermap.org/data/2.5/imp?q={}&APPID={}&units=metric'.format(city, key))
+
+    city_data = city_r.json()
+    name = city_data['name']
+    if format_temp == 'C':
+        print('Current temperature in', name, '{:0.1f}'.format(city_data['main']['temp']), '°C')
+        print('The minimum temperature today is','{:0.1f}'.format(city_data['main']['temp_min']),'°C')
+        print('The maximum temperature today is','{:0.1f}'.format(city_data['main']['temp_max']),'°C')
+
+    else:
+        print('Current temperature in', name, '{:0.1f}'.format(convert_to_F((city_data['main']['temp']))), '°F')
+        print('The minimum temperature today is', '{:0.1f}'.format(convert_to_F((city_data['main']['temp_min']))), '°F')
+        print('The maximum temperature today is', '{:0.1f}'.format(convert_to_F((city_data['main']['temp_max']))), '°F')
+    humidity = city_data['main']['humidity']
+    wind = city_data['wind']['speed']
+    sunrise = city_data['sys']['sunrise']
+    sunset = city_data['sys']['sunset']
+    clouds = city_data['clouds']['all']
+
+    print(convert_clouds(clouds, name))
+    print('Humidity =', humidity, '%')
+    print('Wind =', wind, 'mph', convert_wind(wind, name))
+    print('Sunrise at ', datetime.utcfromtimestamp(sunrise).strftime("%H:%M:%S"))
+    print('Sunset at ', datetime.utcfromtimestamp(sunset).strftime("%H:%M:%S"))
+
+
+def week(city, format_temp, n_days):
+    week_r=requests.get('http://api.openweathermap.org/data/2.5/forecast?q={},us&mode=json&APPID={}&units=metric'.format(city, key))
+    week_data = week_r.json()
+    name1 = week_data['city']['name']
+    for i in week_data['list']:
+            m = i['dt_txt']
+            forecast_date = datetime.strptime(m, '%Y-%m-%d %H:%M:%S')
+            if forecast_date.hour != 15:
+                continue
+            delta = timedelta(days=n_days)
+            today = datetime.today()
+            end_date = today + delta
+            if forecast_date < end_date and format_temp == 'C' :
+                print(forecast_date)
+                print('Current temperature in', name1, '{:0.1f}'.format(i['main']['temp']), '°C')
+                wind = i['wind']['speed']
+                clouds = i['clouds']['all']
+
+                print(convert_clouds(clouds, name1))
+                print('Humidity =', i['main']['humidity'], '%')
+                print('Wind =', wind, 'mph', convert_wind(wind, name1))
+                print()
+            elif forecast_date < end_date and format_temp == 'F':
+                print(forecast_date)
+                print('Current temperature in', name1, '{:0.1f}'.format(convert_to_F((i['main']['temp']))), '°F')
+                wind = i['wind']['speed']
+                clouds = i['clouds']['all']
+
+                print(convert_clouds(clouds, name1))
+                print('Humidity =', i['main']['humidity'], '%')
+                print('Wind =', wind, 'mph', convert_wind(wind, name1))
+                print()

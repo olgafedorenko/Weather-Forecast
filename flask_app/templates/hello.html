@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+        body{
+        background-color: lightyellow;
+        }
+        img{
+        width:40%;
+        display: block;
+         margin-left: auto;
+         margin-right: auto;
+        }
+        h1{
+        text-align:center;
+        color:purple;
+        font-weight: bold;
+        font-style: italic;
+        }
+        fieldset {
+        background-color: bisque;
+        display: block;
+        margin: auto;
+        width: 70%;
+        text-align:center;
+        }
+
+        legend{
+        text-align:center;
+        color:blue;
+        font-size:20px;
+        font-weight: bold;
+        font-style: italic;}
+
+
+    </style>
+</head>
+<body>
+<h1>Hello my friend!</h1>
+<img src="/static/banner_weather2.gif" alt="pic1">
+
+
+<form method="post" action="{{ url_for('hello') }}" title="WEATHER">
+    <fieldset>
+        <legend> Weather in city what you want</legend>
+
+        <div id="chose">
+            <p>
+                <label for="city_name">City name:</label>
+                <input type="text" name="city_name" id="city_name" size="35" maxlength="50" value="Kiev" required>
+            </p>
+            <p>Weather:
+                <input type="radio" name="action" id="radion_button_current_weather" value="today" checked>
+                <label for="radion_button_current_weather">Current weather</label>
+                <input type="radio" name="action" id="radion_button_5d" value="5d">
+                <label for="radion_button_5d">Weather for next n days</label>
+            </p>
+            <p>Celsius(C) or Fahrenheit(F)?
+                <input type="radio" name="format_temp" id="radion_button_Celsius" value="C" checked>
+                <label for="radion_button_Celsius">C</label>
+                <input type="radio" name="format_temp" id="radion_button_Fahrenheit" value="F">
+                <label for="radion_button_Fahrenheit">F</label>
+            </p>
+            <p>
+                <label for="city_name">Number of days:</label>
+                <input type="text" name="n_days" id="n_days" size="15" maxlength="5">
+            </p>
+            {% if error_message %}
+                <p> {{ error_message }} </p>
+            {% endif %}
+            <input type='submit' value='Push, Please'/>
+
+        </div>
+    </fieldset>
+</form>
+
+</body>
+</html>
+
+
+

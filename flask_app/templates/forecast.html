@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello from Forecast</title>
+</head>
+<body>
+{% if action == 'today' %}
+    <h1>Hello {{city}}!</h1>
+    <h1>Hello {{action}}!</h1>
+    <h1>Hello {{temp}}!</h1>
+    return str(weather.current_weather(city_name, format_temp))
+{% else %}
+    <h1>Hello {{format_temp}}!</h1>
+    <h1>Hello {{temp}}!</h1>
+{% endif %}
+</body>
+</html>
+
+<form method="post" action="http://www.google.com" title="WEATHER">
+ <fieldset>
+        <legend> Weather in city what you want</legend>
+
+<div id="chose">
+    <p>Weather:
+<input type="radio" name="weather" id="today weather" value="Current weather" checked>
+<label for="today weather">Current weather</label>
+<input type="radio" name="weather" id="weather for 5 next days" value="Weather for next n days">
+<label for="weather for 5 next days">Weather for next n days</label></p>
+         <input type='submit' value='Push, Please' />
+
+</div>
+    </fieldset>
+        </form>
+
+<fieldset>
+        <legend> Weather in city what you want</legend>
+    {% if chose == Current weather  %}
+        {% for   key, value in result %}
+            <p>{{value}}</p>
+        {% endfor %}
+    {%else  %}
+        {% for   key, value in result %}
+            <p>{{value}}</p>
+        {% endfor %}
+    {% endif %}
+</fieldset>
+{% endblock %}

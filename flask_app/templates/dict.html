@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body{
+        background-color: lightgray;
+        }
+        img{
+        width:20%;
+        float:left;
+        }
+        h1{
+        text-align:center;
+        color:purple;
+        font-weight: bold;
+        font-style: italic;
+        }
+        fieldset {
+        background-color: bisque;
+        margin: 20px;
+        width: 70%;
+        text-align:center;
+        }
+
+        legend{
+        text-align:center;
+        color:blue;
+        font-size:20px;
+        font-weight: bold;
+        font-style: italic;}
+
+
+    </style>
+</head>
+{% block body %}
+<h1>Hello my friend!</h1>
+<img src="/static/cartoon-weather.jpg" alt="pic1">
+
+
+<fieldset>
+        <legend> Weather in city what you want</legend>
+        {% if not current_weather  %}
+             <p>The weather is very beautiful today in {{ result[0]["city_name"] }}</p>
+            <hr>
+            {% for d in result %}
+                {% for key in d %}
+                    <p> {{ d[key] }} </p>
+                {% endfor %}
+                <hr>
+            {% endfor %}
+        {% else %}
+            {% for key in result %}
+                <p>{{result[key]}}</p>
+          {% endfor %}
+        {% endif %}
+
+
+
+
+
+</fieldset>
+{% endblock %}
+
+</html>
